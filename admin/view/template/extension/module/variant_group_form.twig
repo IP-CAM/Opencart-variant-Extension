@@ -1,0 +1,21 @@
+{# admin/view/template/extension/module/variant_group_form.twig #}
+<div class="container">
+  <h1>{{ heading_title }}</h1>
+  
+  {% if error_warning %}
+    <div class="alert alert-danger">{{ error_warning }}</div>
+  {% endif %}
+  
+  <form action="{{ action }}" method="post">
+    <div class="form-group">
+      <label for="input-group-name">{{ entry_group_name }}</label>
+      <input type="text" name="group_name" value="{{ group.group_name }}" placeholder="{{ entry_group_name }}" id="input-group-name" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label for="input-products">{{ entry_products }}</label>
+      {# The products field expects a comma-separated list of product IDs #}
+      <input type="text" name="products" value="{{ group.products is defined ? group.products|join(',') : '' }}" placeholder="e.g., 12,34,56" id="input-products" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>

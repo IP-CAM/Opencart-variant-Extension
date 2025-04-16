@@ -1,0 +1,10 @@
+
+{% if variants %}
+<div class="variant-group">
+    {% for variant in variants %}
+        <button class="variant-swatch" data-product-id="{{ variant.product_id }}">
+            <img src="{{ variant.image }}" alt="{{ variant.name }}" title="{{ variant.option_value }}">
+        </button>
+    {% endfor %}
+</div>
+{% endif %}
