@@ -9,7 +9,6 @@
   <!-- Admin: Controller File -->
   <file path="admin/controller/extension/module/variant_group.php">
     <operation>
-      <!-- If file exists, this can replace its contents; otherwise, ocMod will create it -->
       <search><![CDATA[<?php]]></search>
       <add position="replace"><![CDATA[
 <?php
