@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Variant Group Extension</name>
+  <code>variant_group</code>
+  <version>1.0</version>
+  <author>Your Name</author>
+  <link>http://yourwebsite.com</link>
+
+  <!-- Admin: Controller File -->
+  <file path="admin/controller/extension/module/variant_group.php">
+    <operation>
+      <!-- If file exists, this can replace its contents; otherwise, ocMod will create it -->
+      <search><![CDATA[<?php]]></search>
+      <add position="replace"><![CDATA[
+<?php
+class ControllerExtensionModuleVariantGroup extends Controller {
+    private $error = array();
+
+    public function index() {
+        $this->load->language('extension/module/variant_group');
+        $this->document->setTitle($this->language->get('heading_title'));
+        $this->load->model('extension/module/variant_group');
+
+        if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+            // Save the variant group settings (including associated product IDs)
+            $this->model_extension_module_variant_group->addGroup($this->request->post);
+            $this->session->data['success'] = $this->language->get('text_success');
+            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'], true));
+        }
+
+        $data['action'] = $this->url->link('extension/module/variant_group', 'user_token=' . $this->session->data['user_token'], true);
+
+        // Load existing group data if editing
+        if (isset($this->request->get['variant_group_id'])) {
+            $data['group'] = $this->model_extension_module_variant_group->getGroup($this->request->get['variant_group_id']);
+        } else {
+            $data['group'] = array();
+        }
+
+        $this->response->setOutput($this->load->view('extension/module/variant_group_form', $data));
+    }
+
+    protected function validate() {
+        if (!$this->user->hasPermission('modify', 'extension/module/variant_group')) {
+            $this->error['warning'] = $this->language->get('error_permission');
+        }
+        return !$this->error;
+    }
+}
+?>
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- Admin: Language File -->
+  <file path="admin/language/en-gb/extension/module/variant_group.php">
+    <operation>
+      <search><![CDATA[<?php]]></search>
+      <add position="replace"><![CDATA[
+<?php
+// Heading
+$_['heading_title']    = 'Variant Group';
+
+// Text
+$_['text_success']     = 'Success: You have modified variant groups!';
+$_['text_edit']        = 'Edit Variant Group';
+
+// Entry fields
+$_['entry_group_name'] = 'Group Name';
+$_['entry_products']   = 'Products (Enter product IDs separated by commas)';
+
+// Error
+$_['error_permission'] = 'Warning: You do not have permission to modify variant groups!';
+?>
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- Admin: View Template (Twig) -->
+  <file path="admin/view/template/extension/module/variant_group_form.twig">
+    <operation>
+      <search><![CDATA[{#]]></search>
+      <add position="replace"><![CDATA[
+{#
+  Variant Group Admin Form
+#}
+<div class="container">
+  <h1>{{ heading_title }}</h1>
+  
+  {% if error_warning %}
+    <div class="alert alert-danger">{{ error_warning }}</div>
+  {% endif %}
+  
+  <form action="{{ action }}" method="post">
+    <div class="form-group">
+      <label for="input-group-name">{{ entry_group_name }}</label>
+      <input type="text" name="group_name" value="{{ group.group_name }}" placeholder="{{ entry_group_name }}" id="input-group-name" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label for="input-products">{{ entry_products }}</label>
+      <input type="text" name="products" value="{{ group.products is defined ? group.products|join(',') : '' }}" placeholder="e.g., 12,34,56" id="input-products" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+      ]]></add>
+    </operation>
+  </file>
+
+  <!-- Catalog: Model File -->
+  <file path="catalog/model/extension/module/variant_group.php">
+    <operation>
+      <search><![CDATA[<?php]]></search>
+      <add position="replace"><![CDATA[
+<?php
+class ModelExtensionModuleVariantGroup extends Model {
+    // Get the variant group for a given product
+    public function getGroupByProductId($product_id) {
+        $query = $this->db->query("SELECT vg.* FROM " . DB_PREFIX . "variant_group vg LEFT JOIN " . DB_PREFIX . "variant_group_product vgp ON (vg.variant_group_id = vgp.variant_group_id) WHERE vgp.product_id = '" . (int)$product_id . "'");
+        return $query->num_rows ? $query->row : false;
+    }
+
+    // Get all products associated with a variant group
+    public function getProductsInGroup($group_id) {
+        $query = $this->db->query("SELECT p.product_id, p.name, p.image FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "variant_group_product vgp ON (p.product_id = vgp.product_id) WHERE vgp.variant_group_id = '" . (int)$group_id . "'");
+        return $query->rows;
+    }
+}
+?>
+      ]]></add>
+    </operation>
+  </file>
+  
+</modification>
