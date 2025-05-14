@@ -80,3 +80,22 @@ For bug reports, feature requests, or customization inquiries, please open an is
 ## 📄 License
 
 This extension is licensed under the MIT License. Feel free to use and modify for personal or commercial projects.
+
+## 🧑‍💻 Contribute
+
+We welcome contributions from the community to make the **Variant Group Extension - OpenCart** even better!
+
+### Ways to Contribute:
+- 🐞 Report bugs via GitHub Issues  
+- 💡 Suggest new features or enhancements  
+- 🛠 Submit pull requests to fix issues or improve the code  
+- 🌐 Help with translation/localization  
+- 📖 Improve documentation and tutorials
+
+### Contribution Guidelines:
+1. Fork the repository and create a new branch (`feature/your-feature-name`).
+2. Make your changes with clear commit messages.
+3. Test thoroughly to ensure compatibility with OpenCart 3.x.
+4. Submit a pull request with a description of your changes.
+
+> Contributions should follow the OpenCart coding standards and aim to maintain compatibility across different themes and OpenCart versions
